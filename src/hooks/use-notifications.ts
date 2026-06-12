@@ -21,7 +21,29 @@ export function useNotifications() {
 
   useEffect(() => { fetchNotifs(); }, [fetchNotifs]);
 
+  const markRead = useCallback(async (id: string) => {
+    try {
+      const res = await window.fetch(`/api/notifications/${id}`, { method: "PATCH" });
+      if (res.ok) {
+        setData((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
+      }
+    } catch {
+      // silently fail
+    }
+  }, []);
+
+  const markAllRead = useCallback(async () => {
+    try {
+      const res = await window.fetch("/api/notifications/mark-all", { method: "PATCH" });
+      if (res.ok) {
+        setData((prev) => prev.map((n) => ({ ...n, read: true })));
+      }
+    } catch {
+      // silently fail
+    }
+  }, []);
+
   const unreadCount = data.filter((n) => !n.read).length;
 
-  return { data, loading, unreadCount, refetch: fetchNotifs };
+  return { data, loading, unreadCount, refetch: fetchNotifs, markRead, markAllRead };
 }
