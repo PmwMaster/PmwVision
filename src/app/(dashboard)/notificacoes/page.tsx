@@ -17,7 +17,7 @@ const typeConfig: Record<NotifType, { icon: React.ElementType; color: string; bg
 };
 
 export default function NotificationsPage() {
-  const { data: notifications, loading } = useNotifications();
+  const { data: notifications, loading, markAllRead, markRead } = useNotifications();
 
   return (
     <div className="max-w-2xl mx-auto space-y-6 animate-fade-in">
@@ -26,7 +26,7 @@ export default function NotificationsPage() {
           <p className="text-label-md text-[hsl(var(--on-surface-variant))] uppercase tracking-wider">Central de Alertas</p>
           <h1 className="text-display-lg font-display text-[hsl(var(--on-surface))] mt-1">Notificações</h1>
         </div>
-        <Button variant="secondary" size="sm">Marcar todas como lidas</Button>
+        <Button variant="secondary" size="sm" onClick={markAllRead} disabled={notifications.every((n) => n.read)}>Marcar todas como lidas</Button>
       </div>
 
       {loading ? (
@@ -39,7 +39,7 @@ export default function NotificationsPage() {
             const config = typeConfig[notif.type as NotifType] || typeConfig.suggestion;
             const timeAgo = new Date(notif.created_at).toLocaleDateString("pt-BR");
             return (
-              <Card key={notif.id} className={cn("hover:border-[hsl(var(--primary))/30] transition-all", !notif.read && "border-l-2 border-l-[hsl(var(--primary))]")}>
+              <Card key={notif.id} className={cn("hover:border-[hsl(var(--primary))/30] transition-all cursor-pointer", !notif.read && "border-l-2 border-l-[hsl(var(--primary))]")} onClick={() => { if (!notif.read) markRead(notif.id); }}>
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">
                     <div className={cn("w-9 h-9 rounded-lg flex items-center justify-center shrink-0", config.bg)}>
