@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { handleError, unauthorized } from "@/lib/api-utils";
+import { reinvestmentSchema } from "@/lib/validations";
 
 export async function GET() {
   try {
@@ -29,9 +30,10 @@ export async function POST(request: NextRequest) {
     if (!user) return unauthorized();
 
     const body = await request.json();
+    const parsed = reinvestmentSchema.parse(body);
     const { data, error } = await supabase
       .from("reinvestments")
-      .insert({ ...body, user_id: user.id })
+      .insert({ ...parsed, user_id: user.id })
       .select()
       .single();
 

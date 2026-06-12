@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/providers";
+import { QueryProvider } from "@/components/query-provider";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -36,14 +37,16 @@ export default function RootLayout({
         className={`${inter.variable} ${geist.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          {children}
-          <Toaster
-            position="bottom-right"
-            toastOptions={{
-              className: "glass-panel border border-[hsl(var(--border-precision))]",
-            }}
-            theme="system"
-          />
+          <QueryProvider>
+            {children}
+            <Toaster
+              position="bottom-right"
+              toastOptions={{
+                className: "glass-panel border border-[hsl(var(--border-precision))]",
+              }}
+              theme="system"
+            />
+          </QueryProvider>
         </Providers>
       </body>
     </html>

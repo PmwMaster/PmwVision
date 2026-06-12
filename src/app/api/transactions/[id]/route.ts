@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { handleError, unauthorized } from "@/lib/api-utils";
+import { transactionUpdateSchema } from "@/lib/validations";
 
 export async function GET(
   _request: NextRequest,
@@ -37,9 +38,10 @@ export async function PUT(
 
     const { id } = await params;
     const body = await request.json();
+    const parsed = transactionUpdateSchema.parse(body);
     const { data, error } = await supabase
       .from("transactions")
-      .update(body)
+      .update(parsed)
       .eq("id", id)
       .eq("user_id", user.id)
       .select()

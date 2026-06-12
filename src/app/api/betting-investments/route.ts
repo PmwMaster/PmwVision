@@ -1,7 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { handleError, unauthorized } from "@/lib/api-utils";
-import { investmentSchema } from "@/lib/validations";
+import { bettingInvestmentSchema } from "@/lib/validations";
 
 export async function GET() {
   try {
@@ -10,7 +10,7 @@ export async function GET() {
     if (!user) return unauthorized();
 
     const { data, error } = await supabase
-      .from("investments")
+      .from("betting_investments")
       .select("*")
       .eq("user_id", user.id)
       .is("deleted_at", null)
@@ -30,9 +30,9 @@ export async function POST(request: NextRequest) {
     if (!user) return unauthorized();
 
     const body = await request.json();
-    const parsed = investmentSchema.parse(body);
+    const parsed = bettingInvestmentSchema.parse(body);
     const { data, error } = await supabase
-      .from("investments")
+      .from("betting_investments")
       .insert({ ...parsed, user_id: user.id })
       .select()
       .single();

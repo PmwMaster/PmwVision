@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { handleError, unauthorized } from "@/lib/api-utils";
+import { budgetSchema } from "@/lib/validations";
 
 export async function GET(request: NextRequest) {
   try {
@@ -33,9 +34,10 @@ export async function POST(request: NextRequest) {
     if (!user) return unauthorized();
 
     const body = await request.json();
+    const parsed = budgetSchema.parse(body);
     const { data, error } = await supabase
       .from("monthly_budgets")
-      .upsert({ ...body, user_id: user.id }, { onConflict: "user_id,month" })
+      .upsert({ ...parsed, user_id: user.id }, { onConflict: "user_id,month" })
       .select()
       .single();
 

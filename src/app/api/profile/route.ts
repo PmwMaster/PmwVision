@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { handleError, unauthorized } from "@/lib/api-utils";
+import { profileSchema } from "@/lib/validations";
 
 export async function GET() {
   try {
@@ -28,9 +29,10 @@ export async function PUT(request: NextRequest) {
     if (!user) return unauthorized();
 
     const body = await request.json();
+    const parsed = profileSchema.parse(body);
     const { data, error } = await supabase
       .from("profiles")
-      .update(body)
+      .update(parsed)
       .eq("user_id", user.id)
       .select()
       .single();

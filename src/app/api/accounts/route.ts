@@ -1,7 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { handleError, unauthorized } from "@/lib/api-utils";
-import { investmentSchema } from "@/lib/validations";
+import { accountSchema } from "@/lib/validations";
 
 export async function GET() {
   try {
@@ -10,11 +10,11 @@ export async function GET() {
     if (!user) return unauthorized();
 
     const { data, error } = await supabase
-      .from("investments")
+      .from("accounts")
       .select("*")
       .eq("user_id", user.id)
       .is("deleted_at", null)
-      .order("date", { ascending: false });
+      .order("name");
 
     if (error) throw error;
     return NextResponse.json(data);
@@ -30,9 +30,9 @@ export async function POST(request: NextRequest) {
     if (!user) return unauthorized();
 
     const body = await request.json();
-    const parsed = investmentSchema.parse(body);
+    const parsed = accountSchema.parse(body);
     const { data, error } = await supabase
-      .from("investments")
+      .from("accounts")
       .insert({ ...parsed, user_id: user.id })
       .select()
       .single();

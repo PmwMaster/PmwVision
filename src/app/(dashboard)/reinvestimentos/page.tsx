@@ -16,7 +16,22 @@ const reinvestEvolution = [
 
 export default function ReinvestmentsPage() {
   const { data: reinvestments, loading } = useReinvestments();
-  const total = reinvestments?.reduce((s, r) => s + Number(r.amount), 0) || 0;
+  const active = reinvestments?.filter((r) => !r.deleted_at) || [];
+  const total = active.reduce((s, r) => s + Number(r.amount), 0);
+  const monthlyAvg = active.length > 0 ? total / active.length : 0;
+
+  // Build evolution from real data
+  const evolutionMap = new Map<string, number>();
+  active.forEach((r) => {
+    const key = r.date.slice(0, 7);
+    evolutionMap.set(key, (evolutionMap.get(key) || 0) + Number(r.amount));
+  });
+  const evolutionData = evolutionMap.size > 0
+    ? [...evolutionMap.keys()].sort().map((key) => {
+        const name = new Date(key + "-01").toLocaleDateString("pt-BR", { month: "short" });
+        return { name, value: evolutionMap.get(key)! };
+      })
+    : reinvestEvolution;
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -30,14 +45,20 @@ export default function ReinvestmentsPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <KPICard title="Total Reinvestido" value={formatCurrency(total)} loading={loading} trend="up" icon={<RefreshCw className="w-4 h-4" />} change={null} />
-        <KPICard title="Registros" value={`${reinvestments?.length || 0}`} loading={loading} trend="neutral" icon={<Percent className="w-4 h-4" />} change={null} />
-        <KPICard title="Crescimento Mensal" value="+R$ 2.850,00" trend="up" icon={<TrendingUp className="w-4 h-4" />} change={null} />
+        <KPICard title="Registros" value={`${active.length}`} loading={loading} trend="neutral" icon={<Percent className="w-4 h-4" />} change={null} />
+        <KPICard title="Média Mensal" value={formatCurrency(monthlyAvg)} loading={loading} trend="up" icon={<TrendingUp className="w-4 h-4" />} change={null} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card className="lg:col-span-2">
           <CardHeader><CardTitle>Evolução dos Reinvestimentos</CardTitle></CardHeader>
-          <CardContent><AreaEvolutionChart data={reinvestEvolution} height={250} /></CardContent>
+          <CardContent>
+            {loading ? (
+              <div className="h-[250px] flex items-center justify-center text-body-sm text-[hsl(var(--muted-foreground))]">Carregando...</div>
+            ) : (
+              <AreaEvolutionChart data={evolutionData} height={250} />
+            )}
+          </CardContent>
         </Card>
         <Card>
           <CardHeader><CardTitle>Sugestão</CardTitle></CardHeader>
@@ -45,7 +66,9 @@ export default function ReinvestmentsPage() {
             <div className="p-4 rounded-lg bg-[hsl(var(--growth))/5] border border-[hsl(var(--growth))/20]">
               <RefreshCw className="w-8 h-8 text-[hsl(var(--growth-signal))] mb-2" />
               <p className="text-body-sm text-[hsl(var(--on-surface))] font-medium mb-1">Aporte Sugerido</p>
-              <p className="text-body-sm text-[hsl(var(--on-surface-variant))] mb-3">Sugerimos reinvestir pelo menos 40% do lucro.</p>
+              <p className="text-body-sm text-[hsl(var(--on-surface-variant))] mb-3">
+                Total reinvestido: {formatCurrency(total)}. Continue reinvestindo para crescimento composto.
+              </p>
               <Button variant="growth" size="sm" className="w-full">Reinvestir Agora</Button>
             </div>
           </CardContent>
@@ -57,11 +80,11 @@ export default function ReinvestmentsPage() {
         <CardContent className="p-0">
           {loading ? (
             <div className="py-8 text-center text-body-sm text-[hsl(var(--muted-foreground))]">Carregando...</div>
-          ) : !reinvestments || reinvestments.filter((r) => !r.deleted_at).length === 0 ? (
+          ) : active.length === 0 ? (
             <EmptyState title="Nenhum reinvestimento" description="Registre seus reinvestimentos." actionLabel="Registrar Reinvestimento" />
           ) : (
             <div className="divide-y divide-[hsl(var(--border-precision))]">
-              {reinvestments.filter((r) => !r.deleted_at).map((r) => (
+              {active.map((r) => (
                 <div key={r.id} className="flex items-center gap-3 px-4 py-3">
                   <div className="w-9 h-9 rounded-lg bg-[hsl(var(--growth))/15] flex items-center justify-center">
                     <RefreshCw className="w-4 h-4 text-[hsl(var(--growth-signal))]" />

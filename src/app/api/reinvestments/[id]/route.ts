@@ -1,20 +1,27 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { handleError, unauthorized } from "@/lib/api-utils";
-import { investmentSchema } from "@/lib/validations";
+import { reinvestmentUpdateSchema } from "@/lib/validations";
 
-export async function GET() {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return unauthorized();
 
+    const { id } = await params;
+    const body = await request.json();
+    const parsed = reinvestmentUpdateSchema.parse(body);
     const { data, error } = await supabase
-      .from("investments")
-      .select("*")
+      .from("reinvestments")
+      .update(parsed)
+      .eq("id", id)
       .eq("user_id", user.id)
-      .is("deleted_at", null)
-      .order("date", { ascending: false });
+      .select()
+      .single();
 
     if (error) throw error;
     return NextResponse.json(data);
@@ -23,22 +30,24 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return unauthorized();
 
-    const body = await request.json();
-    const parsed = investmentSchema.parse(body);
-    const { data, error } = await supabase
-      .from("investments")
-      .insert({ ...parsed, user_id: user.id })
-      .select()
-      .single();
+    const { id } = await params;
+    const { error } = await supabase
+      .from("reinvestments")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", id)
+      .eq("user_id", user.id);
 
     if (error) throw error;
-    return NextResponse.json(data, { status: 201 });
+    return NextResponse.json({ success: true });
   } catch (error) {
     return handleError(error);
   }
