@@ -21,20 +21,20 @@ pmw_vision_app/
 ├── src/
 │   ├── app/
 │   │   ├── (dashboard)/   # Layout autenticado (Sidebar + TopBar)
-│   │   │   ├── dashboard/      # KPIs, gráficos, últimas movimentações
-│   │   │   ├── orcamento/      # Orçamento mensal (MOCK - precisa conectar)
+│   │   │   ├── dashboard/      # KPIs, gráficos, últimas movimentações (real)
+│   │   │   ├── orcamento/      # Orçamento mensal (parcial)
 │   │   │   ├── movimentacoes/  # Transações CRUD
-│   │   │   ├── investimentos/  # 3 abas (Financeiros OK, Apostas/Hobbies MOCK)
-│   │   │   ├── reinvestimentos/# Reinvestimentos
+│   │   │   ├── investimentos/  # 3 abas (Financeiro, Apostas, Hobbies - reais)
+│   │   │   ├── reinvestimentos/# Reinvestimentos (CRUD completo)
 │   │   │   ├── metas/          # Metas financeiras
-│   │   │   ├── patrimonio/     # Evolução patrimonial (100% MOCK)
+│   │   │   ├── patrimonio/     # Evolução patrimonial (parcial)
 │   │   │   ├── historico/      # Histórico completo
-│   │   │   ├── notificacoes/   # Central de notificações
-│   │   │   └── configuracoes/  # Perfil/senha/preferências
+│   │   │   ├── notificacoes/   # Central de notificações (backend OK, frontend pendente)
+│   │   │   └── configuracoes/  # Perfil/senha/preferências (parcial)
 │   │   ├── auth/          # Login/Cadastro
-│   │   └── api/           # 12 API routes existentes
+│   │   └── api/           # 23 API routes (16 famílias de endpoints)
 │   ├── components/        # UI (shadcn), layout, shared, charts
-│   ├── hooks/             # 10 data hooks
+│   ├── hooks/             # 13 data hooks
 │   ├── lib/               # utils, api-utils, supabase client/server/middleware
 │   └── types/             # Database types
 ├── supabase/schema.sql
@@ -44,59 +44,66 @@ pmw_vision_app/
 ## Estado Atual das Páginas
 | Página | Status | Problema |
 |--------|--------|----------|
-| Dashboard | Parcial | KPIs via API, gráficos 100% mock, filtros de período não funcionam |
-| Orçamento | 100% Mock | useBudget hook existe mas não é usado |
-| Movimentações | Funcional | CRUD OK, edição sem handler, sem paginação |
-| Investimentos | Parcial | Aba Financeiro OK, Apostas e Hobbies 100% mock |
-| Reinvestimentos | Parcial | Sem [id] route (PUT/DELETE), gráfico mock |
+| Dashboard | Real | KPIs + gráficos via API (evolution, income-vs-expense). Fallback mock se API falhar |
+| Orçamento | Parcial | Orçamento salva/recupera via API. Categorias e savings são mock constants |
+| Movimentações | Funcional | CRUD OK, sem paginação, sem filtros avançados |
+| Investimentos | Real | 3 abas (Financeiro, Apostas, Hobbies) com dados reais via API. 2 KPIs mock |
+| Reinvestimentos | Funcional | CRUD completo via API, gráfico usa dados reais |
 | Metas | Funcional | CRUD OK, upload imagem fake, sem detail page |
-| Patrimônio | 100% Mock | Sem data fetching |
+| Patrimônio | Parcial | Gráfico de evolução real. KPIs com fallback mock |
 | Histórico | Funcional | Export buttons não funcionam |
-| Notificações | Parcial | GET OK, mark read não funciona |
-| Configurações | Parcial | Senha/logout/avatar/preferências não funcionam |
+| Notificações | Parcial | Backend completo (PATCH mark-read e mark-all). Hook sem funções mark, botão sem onClick |
+| Configurações | Parcial | Update de nome OK. Senha/logout/avatar/preferências são placeholders |
 
-## API Routes Existentes
+## API Routes Existentes (23 routes, 16 famílias)
 | Rota | Métodos | Status |
 |------|---------|--------|
 | /api/dashboard | GET | OK |
-| /api/transactions | GET, POST | OK (sem Zod) |
+| /api/dashboard/evolution | GET | OK (Nova) |
+| /api/dashboard/income-vs-expense | GET | OK (Nova) |
+| /api/transactions | GET, POST | OK |
 | /api/transactions/[id] | GET, PUT, DELETE | OK |
 | /api/goals | GET, POST | OK |
-| /api/goals/[id] | PUT, DELETE | OK |
+| /api/goals/[id] | GET, PUT, DELETE | OK |
 | /api/investments | GET, POST | OK |
-| /api/investments/[id] | PUT, DELETE | OK |
-| /api/reinvestments | GET, POST | OK (falta [id]) |
+| /api/investments/[id] | GET, PUT, DELETE | OK |
+| /api/reinvestments | GET, POST | OK |
+| /api/reinvestments/[id] | GET, PUT, DELETE | OK |
 | /api/budgets | GET, POST | OK |
-| /api/categories | GET, POST | OK |
-| /api/notifications | GET | OK (falta PATCH) |
+| /api/categories | GET | OK |
+| /api/notifications | GET | OK |
+| /api/notifications/[id] | PATCH | OK (mark read) |
+| /api/notifications/mark-all | PATCH | OK (mark all read) |
 | /api/profile | GET, PUT | OK |
+| /api/accounts | GET, POST | OK (Nova) |
+| /api/accounts/[id] | GET, PUT, DELETE | OK (Nova) |
+| /api/betting-investments | GET, POST | OK (Nova) |
+| /api/betting-investments/[id] | GET, PUT, DELETE | OK (Nova) |
+| /api/hobby-investments | GET, POST | OK (Nova) |
+| /api/hobby-investments/[id] | GET, PUT, DELETE | OK (Nova) |
 
 ## API Routes Faltando
-- /api/accounts (tabela existe)
-- /api/betting-investments (tabela existe)
-- /api/hobby-investments (tabela existe)
-- /api/reinvestments/[id] (PUT/DELETE)
-- /api/notifications/[id] (PATCH mark read)
-- /api/notifications/mark-all (PATCH)
+Nenhuma. Todas as rotas planejadas foram implementadas na Fase 2.
 
-## Hooks Existentes (todos via window.fetch, sem React Query)
-useDashboard, useTransactions, useGoals, useInvestments, useReinvestments, useBudget, useCategories, useProfile, useNotifications, useAuth
+## Hooks Existentes (13 hooks - 11 com useState/useEffect, 2 com React Query)
+useDashboard, useDashboardEvolution, useDashboardIncomeExpense, useTransactions, useGoals, useInvestments, useBettingInvestments (RQ), useHobbyInvestments (RQ), useReinvestments, useBudget, useCategories, useProfile, useNotifications, useAuth
 
 ## Plano de Implementação (6 Fases)
-### Fase 1 (ATUAL): Fundação
+### Fase 1 (CONCLUÍDA): Fundação
 - TanStack Query + QueryProvider
 - api-client.ts wrapper unificado
 - Zod validation nas API routes
-- Novas API routes: accounts, betting-investments, hobby-investments, reinvestments/[id], notifications PATCH
-### Fase 2: Dados Reais
+- Novas API routes: accounts, betting-investments, hobby-investments, reinvestments/[id], notifications PATCH, dashboard/evolution, dashboard/income-vs-expense
+### Fase 2 (CONCLUÍDA): Dados Reais
 - Dashboard gráficos reais + filtros de período
-- Orçamento com dados reais
+- Orçamento com dados reais (parcial: categorias mock)
 - Patrimônio com dados reais
 - Investimentos Apostas/Hobbies reais
-### Fase 3: Funcionalidades Quebradas
+### Fase 3 (ATUAL): Funcionalidades Quebradas
 - Botões não funcionais (editar, novo investimento, ajustar limite, etc.)
 - Upload de imagens (avatar + metas)
 - Sign out, alterar senha
+- Wire up mark-read nas notificações (backend pronto, frontend pendente)
 ### Fase 4: Qualidade
 - Paginação, filtros, export CSV, optimistic updates
 ### Fase 5: Automação
