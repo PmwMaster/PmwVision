@@ -1,0 +1,242 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* ============================================
+     PMW Vision - Obsidian Wealth Strategy
+     Light Mode + Dark Mode CSS Variables
+     ============================================ */
+
+  :root {
+    /* Light Mode - Base */
+    --background: 0 0% 100%;
+    --background-base: 0 0% 100%;
+    --foreground: 240 3% 11%;
+
+    /* Surface (Light) */
+    --surface: 0 0% 100%;
+    --surface-dim: 240 5% 96%;
+    --surface-bright: 0 0% 100%;
+    --surface-container-lowest: 240 5% 98%;
+    --surface-container-low: 240 5% 96%;
+    --surface-container: 240 5% 94%;
+    --surface-container-high: 240 4% 92%;
+    --surface-container-highest: 240 4% 90%;
+
+    /* On Surface (Light) */
+    --on-surface: 240 4% 10%;
+    --on-surface-variant: 240 4% 35%;
+
+    /* Outline (Light) */
+    --outline: 240 5% 65%;
+    --outline-variant: 240 5% 85%;
+
+    /* Primary - Trust Blue (Light) */
+    --primary: 226 100% 40%;
+    --primary-foreground: 0 0% 100%;
+    --primary-container: 220 100% 90%;
+    --primary-container-foreground: 226 100% 15%;
+    --primary-fixed: 220 100% 90%;
+    --primary-fixed-dim: 220 100% 80%;
+    --on-primary-fixed: 226 100% 10%;
+    --on-primary-fixed-variant: 226 100% 30%;
+
+    /* Secondary - Growth Green (Light) */
+    --secondary: 160 100% 20%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-container: 155 100% 85%;
+    --secondary-container-foreground: 160 100% 10%;
+    --secondary-fixed: 155 100% 85%;
+    --secondary-fixed-dim: 155 100% 75%;
+    --on-secondary-fixed: 160 100% 8%;
+    --on-secondary-fixed-variant: 160 100% 20%;
+
+    /* Tertiary - Wealth Gold (Light) */
+    --tertiary: 45 93% 45%;
+    --tertiary-foreground: 0 0% 10%;
+    --tertiary-container: 48 100% 88%;
+    --tertiary-container-foreground: 45 100% 15%;
+    --tertiary-fixed: 48 100% 88%;
+    --tertiary-fixed-dim: 48 100% 78%;
+    --on-tertiary-fixed: 45 100% 8%;
+    --on-tertiary-fixed-variant: 45 100% 25%;
+
+    /* Error (Light) */
+    --error: 0 75% 42%;
+    --error-foreground: 0 0% 100%;
+    --error-container: 0 100% 92%;
+    --error-container-foreground: 0 75% 15%;
+
+    /* Growth Signals */
+    --growth: 160 100% 33%;
+    --growth-signal: 160 100% 35%;
+
+    /* Card */
+    --card: 0 0% 100%;
+    --card-foreground: 240 3% 11%;
+
+    /* Misc */
+    --border: 240 5% 88%;
+    --input: 240 5% 90%;
+    --ring: 226 100% 50%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
+
+    /* Border precision */
+    --border-precision: 0 0% 0% / 0.08;
+  }
+
+  .dark {
+    /* Dark Mode - Obsidian */
+    --background: 240 6% 5%;
+    --background-base: 240 6% 2%;
+    --foreground: 270 3% 90%;
+
+    /* Surface (Dark) */
+    --surface: 240 3% 8%;
+    --surface-dim: 240 3% 8%;
+    --surface-bright: 240 3% 22%;
+    --surface-container-lowest: 240 4% 5%;
+    --surface-container-low: 240 3% 11%;
+    --surface-container: 270 2% 12%;
+    --surface-container-high: 270 3% 16%;
+    --surface-container-highest: 270 3% 20%;
+
+    /* On Surface (Dark) */
+    --on-surface: 270 3% 90%;
+    --on-surface-variant: 230 10% 78%;
+
+    /* Outline (Dark) */
+    --outline: 228 8% 54%;
+    --outline-variant: 230 8% 28%;
+
+    /* Primary - Trust Blue (Dark) */
+    --primary: 228 100% 85%;
+    --primary-foreground: 226 100% 16%;
+    --primary-container: 226 100% 40%;
+    --primary-container-foreground: 240 100% 97%;
+    --primary-fixed: 228 100% 90%;
+    --primary-fixed-dim: 228 100% 85%;
+    --on-primary-fixed: 226 100% 10%;
+    --on-primary-fixed-variant: 226 100% 35%;
+
+    /* Secondary - Growth Green (Dark) */
+    --secondary: 145 100% 88%;
+    --secondary-foreground: 160 100% 12%;
+    --secondary-container: 158 100% 48%;
+    --secondary-container-foreground: 160 100% 26%;
+    --secondary-fixed: 156 100% 66%;
+    --secondary-fixed-dim: 158 100% 45%;
+    --on-secondary-fixed: 160 100% 8%;
+    --on-secondary-fixed-variant: 160 100% 25%;
+
+    /* Tertiary - Wealth Gold (Dark) */
+    --tertiary: 46 83% 60%;
+    --tertiary-foreground: 45 100% 12%;
+    --tertiary-container: 45 69% 50%;
+    --tertiary-container-foreground: 45 100% 15%;
+    --tertiary-fixed: 46 100% 67%;
+    --tertiary-fixed-dim: 46 83% 60%;
+    --on-tertiary-fixed: 45 100% 8%;
+    --on-tertiary-fixed-variant: 45 100% 25%;
+
+    /* Error (Dark) */
+    --error: 5 100% 84%;
+    --error-foreground: 0 75% 20%;
+    --error-container: 0 75% 30%;
+    --error-container-foreground: 5 100% 91%;
+
+    /* Growth Signals */
+    --growth: 158 100% 48%;
+    --growth-signal: 158 96% 45%;
+
+    /* Card */
+    --card: 240 3% 8%;
+    --card-foreground: 270 3% 90%;
+
+    /* Misc */
+    --border: 0 0% 100% / 0.08;
+    --input: 270 3% 14%;
+    --ring: 226 100% 60%;
+    --muted: 270 3% 14%;
+    --muted-foreground: 230 8% 60%;
+
+    /* Border precision */
+    --border-precision: 0 0% 100% / 0.08;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-[hsl(var(--border))];
+  }
+  body {
+    @apply bg-[hsl(var(--background-base))] text-[hsl(var(--foreground))] font-sans antialiased;
+  }
+}
+
+@layer components {
+  /* Glass Panel - Frosted glass effect */
+  .glass-panel {
+    @apply bg-[hsl(var(--surface))]/80 backdrop-blur-[20px] border border-[hsl(var(--border-precision))];
+  }
+
+  .glass-card {
+    @apply bg-[hsl(var(--surface-container))]/60 backdrop-blur-[20px] border border-[hsl(var(--border-precision))];
+  }
+
+  /* Border precision - 1px white border at 8% opacity */
+  .border-precision {
+    border-color: hsl(var(--border-precision));
+  }
+
+  /* Growth signal */
+  .growth-signal {
+    color: hsl(var(--growth-signal));
+  }
+
+  /* Custom scrollbar */
+  .scroll-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scroll-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--outline-variant));
+    border-radius: 4px;
+  }
+
+  /* Progress bars */
+  .progress-bar-track {
+    @apply h-1 rounded-full bg-[hsl(var(--muted))] overflow-hidden;
+  }
+  .progress-bar-fill {
+    @apply h-full rounded-full bg-[hsl(var(--growth))] transition-all duration-700 ease-out;
+  }
+
+  /* Sidebar active */
+  .sidebar-active {
+    @apply bg-[hsl(var(--secondary-container))] text-[hsl(var(--secondary-container-foreground))];
+  }
+
+  /* Active tab */
+  .active-tab {
+    @apply border-b-2 border-[hsl(var(--primary))];
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
